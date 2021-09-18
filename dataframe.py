@@ -3,12 +3,14 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+from matplotlib import pyplot as plt
+
 
 directory = "./brain_tumor_dataset/no"
-WIDTH = 500
-HEIGHT = 500
+WIDTH = 50
+HEIGHT = 50
 SAMPLES = 253
-VALIDATION_PERCENTAGE = 0.2
+VALIDATION_PERCENTAGE = 0.3
 
 dataframe_n = pd.DataFrame()
 for file in os.listdir(directory):
@@ -40,18 +42,21 @@ for file in os.listdir(directory):
     except OSError:
         pass
 
+
 def create_model():
     model = tf.keras.Sequential([
-        tf.keras.layers.InputLayer(input_shape=(250000,)),
-        tf.keras.layers.Dense(256, activation=tf.keras.activations.relu),
-        tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)
+        tf.keras.layers.InputLayer(input_shape=(WIDTH*HEIGHT,)),
+        tf.keras.layers.Dense(250, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)
     ])
     return model
 
+
 dataframe = dataframe_n.append(dataframe_y, ignore_index=True)
 
-target = dataframe[WIDTH*HEIGHT]
-dataframe = dataframe.drop([WIDTH*HEIGHT], axis=1)
+target = dataframe[WIDTH * HEIGHT]
+dataframe = dataframe.drop([WIDTH * HEIGHT], axis=1)
+dataframe = dataframe / 255
 
 validation_samples = int(VALIDATION_PERCENTAGE * SAMPLES)
 
@@ -72,24 +77,33 @@ training = training.drop(['index'], axis=1)
 training_output = training_output.drop(['index'], axis=1)
 
 model = create_model()
-EPOCHS = 20
+EPOCHS = 100
 model.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.binary_crossentropy, metrics=['accuracy'])
-model.fit(x=training.values, y=training_output.values, epochs=EPOCHS,
+history = model.fit(x=training.values, y=training_output.values, epochs=EPOCHS,
           validation_data=(validation_dataset.values, validation_output.values),
           use_multiprocessing=True)
-print(validation_output)
-print(model(validation_output.values))
 
+# print(validation_output)
+# print(model(validation_dataset.values))
+# print(training_output)
+# print(model(training.values))
 
-
-
-
-
-
-
-
-
-
+# summarize history for accuracy
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
 # for i in range(0, len(file_names), 5):
 #     dataframe = pd.DataFrame()
 #     for j in range(i * 5, (i * 5) + 5):
@@ -108,4 +122,3 @@ print(model(validation_output.values))
 #         except OSError:
 #             pass
 #     print(dataframe)
-
