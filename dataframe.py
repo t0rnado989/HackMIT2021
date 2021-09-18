@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 
 
 directory = "./brain_tumor_dataset/no"
-WIDTH = 50
-HEIGHT = 50
+WIDTH = 200
+HEIGHT = 200
 SAMPLES = 253
 VALIDATION_PERCENTAGE = 0.3
 
@@ -46,7 +46,7 @@ for file in os.listdir(directory):
 def create_model():
     model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(input_shape=(WIDTH*HEIGHT,)),
-        tf.keras.layers.Dense(250, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(100, activation=tf.keras.activations.relu),
         tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)
     ])
     return model
