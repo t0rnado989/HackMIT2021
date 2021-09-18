@@ -1,21 +1,15 @@
-import SimpleITK as sitk
+import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
+import os
 
-image_test = 'add_image-here.nii' # FIXME, read.nii images
-
-def _int64_feature(value):
-    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
-
-def _float_feature(value):
-    return tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
-
-train_filename = 'tensorflow_records'
-
-writer = tf.python_io.TFRecordWriter(train_filename)
-
-# for meta_data in all_filenames:   #FIXME
-#     img, label = load_img(meta_data, reader_params)
+def create_model():
+    model = tf.keras.Sequential([
+        tf.keras.layers.InputLayer(input_shape=(250000,)),
+        tf.keras.layers.Dense(20000, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(256, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)
+    ])
+    return model
 
 
