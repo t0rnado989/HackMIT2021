@@ -17,3 +17,5 @@ writer = tf.python_io.TFRecordWriter(train_filename)
 
 # for meta_data in all_filenames:   #FIXME
 #     img, label = load_img(meta_data, reader_params)
+
+
