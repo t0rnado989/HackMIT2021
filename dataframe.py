@@ -1,5 +1,5 @@
 import os
-from PIL import Image
+from PIL import Image, ImageChops
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -12,11 +12,20 @@ HEIGHT = 200
 SAMPLES = 253
 VALIDATION_PERCENTAGE = 0.3
 
+def trim(im):
+    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    bbox = diff.getbbox()
+    if bbox:
+        return im.crop(bbox)
+
 dataframe_n = pd.DataFrame()
 for file in os.listdir(directory):
     try:
         with Image.open(directory + "/" + file) as image:
             image = image.convert("L")
+            image = trim(image)
             image = image.resize((WIDTH, HEIGHT))
             pixels = list(image.getdata())
             pixels.append(0)
@@ -33,6 +42,7 @@ for file in os.listdir(directory):
     try:
         with Image.open(directory + "/" + file) as image:
             image = image.convert("L")
+            image = trim(image)
             image = image.resize((WIDTH, HEIGHT))
             pixels = list(image.getdata())
             pixels.append(1)
@@ -41,7 +51,6 @@ for file in os.listdir(directory):
             dataframe_y = dataframe_y.append(df)
     except OSError:
         pass
-
 
 def create_model():
     model = tf.keras.Sequential([
