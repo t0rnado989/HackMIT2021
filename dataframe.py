@@ -43,7 +43,6 @@ for file in os.listdir(directory):
 def create_model():
     model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(input_shape=(250000,)),
-        tf.keras.layers.Dense(20000, activation=tf.keras.activations.relu),
         tf.keras.layers.Dense(256, activation=tf.keras.activations.relu),
         tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)
     ])
@@ -73,7 +72,14 @@ training = training.drop(['index'], axis=1)
 training_output = training_output.drop(['index'], axis=1)
 
 model = create_model()
-EPOCHS = 50
+EPOCHS = 20
+model.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.binary_crossentropy, metrics=['accuracy'])
+model.fit(x=training.values, y=training_output.values, epochs=EPOCHS,
+          validation_data=(validation_dataset.values, validation_output.values),
+          use_multiprocessing=True)
+print(validation_output)
+print(model(validation_output.values))
+
 
 
 
