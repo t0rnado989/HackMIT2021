@@ -6,6 +6,7 @@ function handleFileSelect(){
     window.alert("Request Sent");
     formData.append("file", fn);
     hr.open("POST", url, true);
+    window.alert("opened");
     hr.onreadystatechange = function() {
         if(hr.readyState == 4 && hr.status == 200) {
             var return_data = hr.responseText;
@@ -13,7 +14,9 @@ function handleFileSelect(){
             window.alert(fn);
         }
     }
+    window.alert("pre-send");
     hr.send(formData);
+    window.alert("post-send");
 }
 
 // function handleFileSelect(evt){
