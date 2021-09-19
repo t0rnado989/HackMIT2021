@@ -1,5 +1,4 @@
 function handleFileSelect(){
-    e.preventDefault();
     var hr = new XMLHttpRequest();
     var url = "model.php";
     var fn = document.getElementById("upload").files[0];
