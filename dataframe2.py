@@ -7,6 +7,9 @@ from matplotlib import pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
+WIDTH = 200
+HEIGHT = 200
+
 tumors = "./brain_tumor_dataset/yes"
 healthy = "./brain_tumor_dataset/no"
 directories = [tumors, healthy]
@@ -27,16 +30,16 @@ df = pd.DataFrame(np.array(df).reshape(253, 2), columns = ['file_paths', 'labels
 train_df, test_df = train_test_split(df, train_size=0.8, random_state=0)
 train_df, valid_df = train_test_split(df, train_size=0.7, random_state=0)
 
-target_size = (300, 300)
+target_size = (WIDTH, HEIGHT)
 batch_size = 64
 
-train_datagen = ImageDataGenerator(preprocessing_function=tf.keras.applications.inception_resnet_v2.preprocess_input, zoom_range=0.1, horizontal_flip=True, width_shift_range=0.05, height_shift_range=0.05)
-test_datagen = ImageDataGenerator(preprocessing_function=tf.keras.applications.inception_resnet_v2.preprocess_input)
+train_datagen = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input, zoom_range=0.1, horizontal_flip=True, width_shift_range=0.05, height_shift_range=0.05)
+test_datagen = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet_v2.preprocess_input)
 train_gen = train_datagen.flow_from_dataframe(train_df, x_col='file_paths', y_col='labels', target_size=target_size, batch_size=batch_size, color_mode='rgb', class_mode='binary')
 valid_gen = test_datagen.flow_from_dataframe(valid_df, x_col='file_paths', y_col='labels', target_size=target_size, batch_size=batch_size, color_mode='rgb', class_mode='binary')
 test_gen = test_datagen.flow_from_dataframe(test_df, x_col='file_paths', y_col='labels', target_size=target_size, batch_size=batch_size, color_mode='rgb', class_mode='binary')
 
-base_model = tf.keras.applications.InceptionResNetV2(include_top=False, input_shape=(300, 300, 3))
+base_model = tf.keras.applications.InceptionResNetV2(include_top=False, input_shape=(WIDTH, HEIGHT, 3))
 
 model = tf.keras.Sequential([
     base_model,
@@ -49,7 +52,18 @@ model = tf.keras.Sequential([
 
 learning_rate = 0.0001
 model.compile(loss='binary_crossentropy', optimizer=tf.keras.optimizers.Adam(lr=learning_rate), metrics=['accuracy'])
-EPOCHS = 25
+
+patience = 1
+stop_patience = 3
+factor = 0.5
+
+callbacks = [
+    tf.keras.callbacks.ModelCheckpoint("classify_model.h5", save_best_only=True, verbose=0),
+    tf.keras.callbacks.EarlyStopping(patience=stop_patience, monitor='val_loss', verbose=1),
+    tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=factor, patience=patience, verbose=1)
+]
+
+EPOCHS = 10
 history = model.fit(train_gen, validation_data=valid_gen, epochs=EPOCHS)
 
 # summarize history for accuracy
@@ -70,3 +84,7 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
 model.evaluate(test_gen)
+model.save("Model_0.5")
+
+
+

@@ -117,7 +117,7 @@ plt.show()
 
 import sklearn.metrics as metrics
 # calculate the fpr and tpr for all thresholds of the classification
-probs = model.predict_proba(validation_dataset.values)
+probs = model(validation_dataset.values)
 fpr, tpr, threshold = metrics.roc_curve(validation_output, probs)
 roc_auc = metrics.auc(fpr, tpr)
 
@@ -130,6 +130,9 @@ plt.ylim([0, 1])
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
+
+
+model.save("Sus_model_1.0")
 # for i in range(0, len(file_names), 5):
 #     dataframe = pd.DataFrame()
 #     for j in range(i * 5, (i * 5) + 5):
