@@ -8,11 +8,9 @@ function handleFileSelect(){
     hr.open("POST", url, true);
     window.alert("opened");
     hr.onreadystatechange = function() {
-        if(hr.readyState == 4 && hr.status == 200) {
-            var return_data = hr.responseText;
-            window.alert(return_data);
-            window.alert(fn);
-        }
+        var return_data = hr.responseText;
+        window.alert(return_data);
+        window.alert(fn);
     }
     window.alert("pre-send");
     hr.send(formData);
