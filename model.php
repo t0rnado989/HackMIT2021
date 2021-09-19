@@ -1,3 +1,6 @@
 <?php 
-    print_r($_FILES);
+    if (isset($_FILES["file"]["name"])){
+        echo Hello!;
+    }
+    echo Goodbye!;
 ?>
