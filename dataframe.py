@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 
 
 directory = "./brain_tumor_dataset/no"
-WIDTH = 200
-HEIGHT = 200
+WIDTH = 300
+HEIGHT = 300
 SAMPLES = 253
 VALIDATION_PERCENTAGE = 0.3
 
@@ -55,7 +55,8 @@ for file in os.listdir(directory):
 def create_model():
     model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(input_shape=(WIDTH*HEIGHT,)),
-        tf.keras.layers.Dense(100, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(17, activation=tf.keras.activations.relu),
+        tf.keras.layers.Dense(8, activation=tf.keras.activations.relu),
         tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)
     ])
     return model
@@ -86,7 +87,7 @@ training = training.drop(['index'], axis=1)
 training_output = training_output.drop(['index'], axis=1)
 
 model = create_model()
-EPOCHS = 100
+EPOCHS = 50
 model.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.binary_crossentropy, metrics=['accuracy'])
 history = model.fit(x=training.values, y=training_output.values, epochs=EPOCHS,
           validation_data=(validation_dataset.values, validation_output.values),
@@ -112,6 +113,22 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+import sklearn.metrics as metrics
+# calculate the fpr and tpr for all thresholds of the classification
+probs = model.predict_proba(validation_dataset.values)
+fpr, tpr, threshold = metrics.roc_curve(validation_output, probs)
+roc_auc = metrics.auc(fpr, tpr)
+
+plt.title('Receiver Operating Characteristic')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
 plt.show()
 # for i in range(0, len(file_names), 5):
 #     dataframe = pd.DataFrame()
