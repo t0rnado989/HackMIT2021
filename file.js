@@ -1,8 +1,10 @@
-function handleFileSelect(){
+function handleFileSelect(e){
+    e.preventDefault();
     var hr = new XMLHttpRequest();
     var url = "model.php";
     var fn = document.getElementById("upload").files[0];
     var formData = new FormData();
+    window.alert("Request Sent");
     formData.append("file", fn);
     hr.open("POST", url, true);
     hr.onreadystatechange = function() {
@@ -29,6 +31,4 @@ function handleFileSelect(){
 //     }).then((response) => {console.log(response)})
 //     // var url = "./model.php?filename"
 // }
-
-document.getElementById("upload").addEventListener("change", handleFileSelect);
 
