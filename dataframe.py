@@ -62,17 +62,53 @@ validation_output = validation_output.drop(['index'], axis=1)
 training = training.drop(['index'], axis=1)
 training_output = training_output.drop(['index'], axis=1)
 
-print(training)
-print(training_output)
+model = create_model()
+EPOCHS = 50
+model.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.binary_crossentropy, metrics=['accuracy'])
+history = model.fit(x=training.values, y=training_output.values, epochs=EPOCHS,
+          validation_data=(validation_dataset.values, validation_output.values),
+          use_multiprocessing=True)
+
+# print(validation_output)
+# print(model(validation_dataset.values))
+# print(training_output)
+# print(model(training.values))
+
+# summarize history for accuracy
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+import sklearn.metrics as metrics
+# calculate the fpr and tpr for all thresholds of the classification
+probs = model(validation_dataset.values)
+fpr, tpr, threshold = metrics.roc_curve(validation_output, probs)
+roc_auc = metrics.auc(fpr, tpr)
+
+plt.title('Receiver Operating Characteristic')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
 
 
-
-
-
-
-
-
-
+model.save("Sus_model_2")
 # for i in range(0, len(file_names), 5):
 #     dataframe = pd.DataFrame()
 #     for j in range(i * 5, (i * 5) + 5):
