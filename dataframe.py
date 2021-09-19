@@ -131,6 +131,7 @@ plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
 
+validation_samples = int(VALIDATION_PERCENTAGE * SAMPLES)
 
 model.save("Sus_model_1.0")
 # for i in range(0, len(file_names), 5):

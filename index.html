@@ -2,24 +2,41 @@
 <html lang = "en">
 <head>
 	<meta charset="utf-8">
-	<title>Sprekk Lead Generation</title>
+	<title>TINLab</title>
 	<link rel="stylesheet" type="text/css" href="./index.css">
 </head>
 
 <body>
-	<div id="header">
-		<h1>Tumor Identification Network</h1>
-	</div>
+	<div id="main">
+		<div id="header" class="container">
+			<h1>Tumor Identification Network</h1>
+			<h2>HackMIT 2021</h2>
+			<h3>Created by <a href="https://www.linkedin.com/in/marc-abdallah-55a5a1191/" target="_blank">Marc Abdallah</a> and <a href="https://www.linkedin.com/in/zachary-smith-ba2763194/" target="_blank">Zachary Smith</a></h3>
+			<h4><a href="./info.html">Read more about our design process here</a></h4>
+		</div>
 
-	<div id="navigation">
-		<form action="./password.php" method="POST">
-			<input type="password" autocomplete="off" name="password"><br>
-			<button type="submit" value="Submit" class="button">Submit</button>
-		</form>
+		<div id="top" class="container">
+
+			<p id="summary">TINLab is a neural network powered by <a href="https://www.tensorflow.org/" target="_blank">TensorFlow</a> that can detect the presence of a brain
+			tumor by analyzing an MRI of the brain. TINLab was created in just 24 hours during the 2021
+			HackMIT Hackathon</p>
+
+			<div id="actionable">
+				<form onsubmit="handleFileSelect()">
+					<label class="custom-file-upload">
+						Select a file
+						<input id="upload" type="file" accept=".jpg, .jpeg">
+					</label>
+					<p>Acceptable File Types: jpg, jpeg</p>
+					<input type="submit" value="Submit">
+				</form>
+			</div>
+			<script src="./file.js"></script>
+		</div>
+
+		<footer id="footer" class="container">
+			Data taken from <a href="https://www.kaggle.com/navoneel/brain-mri-images-for-brain-tumor-detection" target="_blank">kaggle</a>
+		</footer>
 	</div>
-	<footer>
-		Created by <a href="https://www.linkedin.com/in/marc-abdallah-55a5a1191/" target="_blank">Marc Abdallah</a> and <a href="https://www.linkedin.com/in/zachary-smith-ba2763194/" target="_blank">Zachary Smith</a>, 2021
-	</footer>
 </body>
-
 </html>
