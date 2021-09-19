@@ -1,4 +1,4 @@
-function handleFileSelect(e){
+function handleFileSelect(){
     e.preventDefault();
     var hr = new XMLHttpRequest();
     var url = "model.php";
